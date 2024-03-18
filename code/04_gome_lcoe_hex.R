@@ -145,18 +145,18 @@ gome_lcoe_2035_norm <- gome_lcoe %>%
 #####################################
 #####################################
 
-# Levelized cost of energy (2025) hex grid
-gome_hex_lcoe_2025 <- gome_hex[gome_lcoe_2025_norm, ] %>%
+# Levelized cost of energy (2035) hex grid
+gome_hex_lcoe_2025 <- gome_hex[gome_lcoe_2035_norm, ] %>%
   # spatially join continental shelf values to Gulf of Maine final WEA hex cells
   sf::st_join(x = .,
-              y = gome_lcoe_2025_norm,
+              y = gome_lcoe_2035_norm,
               join = st_intersects) %>%
   # select fields of importance
-  dplyr::select(index, layer,
+  dplyr::select(OBJECTID,
                 lcoe_norm) %>%
   # group by the index values as there are duplicates
-  dplyr::group_by(index) %>%
-  # summarise the normalized values for the levelized cost of energy in 2025
+  dplyr::group_by(OBJECTID) %>%
+  # summarise the normalized values for the levelized cost of energy in 2035
   ## take the minimum value of the index
   dplyr::summarise(lcoe_norm_index = min(lcoe_norm))
 
