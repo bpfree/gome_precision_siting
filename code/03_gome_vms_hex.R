@@ -92,6 +92,15 @@ gome_vms_hex <- vms_density %>%
   dplyr::rename("OBJECTID" = "OBJECTID.y") %>%
   dplyr::select(OBJECTID, vms_min)
 
+
+# need to jon hex values back with overall grid
+
+# replace any values that are NA/NULL with a value of 1
+dplyr::mutate(across(2:6, ~replace(x = .,
+                                   list = is.na(.),
+                                   # replacement values
+                                   values = 1)))
+
 #####################################
 #####################################
 
