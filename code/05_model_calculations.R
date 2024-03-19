@@ -53,27 +53,25 @@ model3 <- 1/3
 # set directories
 ## lcoe
 ## Gulf of Maine geopackage (with model scores)
-gome_model_geopackage <- "data/b_model_scores/gome_model_scores.gpkg"
-
+gome_gpkg <- "data/b_model_scores/gome_model_scores.gpkg"
 
 #####################################
 #####################################
 
-vms <- sf::st_read(dsn = gome_model_geopackage, layer = sf::st_layers(dsn = gome_model_geopackage)[[1]][grep(pattern = "vms",
-                                                                                 x = sf::st_layers(dsn = gome_model_geopackage)[[1]])])
-narw <- sf::st_read(dsn = gome_model_geopackage, layer = sf::st_layers(dsn = gome_model_geopackage)[[1]][grep(pattern = "narw",
-                                                                           x = sf::st_layers(dsn = gome_model_geopackage)[[1]])])
-lcoe <- sf::st_read(dsn = gome_model_geopackage, layer = sf::st_layers(dsn = gome_model_geopackage)[[1]][grep(pattern = "lcoe",
-                                                                                    x = sf::st_layers(dsn = gome_model_geopackage)[[1]])])
+vms <- sf::st_read(dsn = gome_gpkg, layer = sf::st_layers(dsn = gome_gpkg)[[1]][grep(pattern = "vms",
+                                                                                 x = sf::st_layers(dsn = gome_gpkg)[[1]])])
+narw <- sf::st_read(dsn = gome_gpkg, layer = sf::st_layers(dsn = gome_gpkg)[[1]][grep(pattern = "narw",
+                                                                           x = sf::st_layers(dsn = gome_gpkg)[[1]])])
+lcoe <- sf::st_read(dsn = gome_gpkg, layer = sf::st_layers(dsn = gome_gpkg)[[1]][grep(pattern = "lcoe",
+                                                                                    x = sf::st_layers(dsn = gome_gpkg)[[1]])])
 
 gome_data <- vms %>%
   cbind(narw,
         lcoe) %>%
   dplyr::select(OBJECTID,
-                z_value,
+                vms_min,
                 narw_min,
-                lcoe_norm) %>%
-  dplyr::rename(vms_min = z_value)
+                lcoe_norm)
 
 # load data
 gome_model <- gome_data %>%
@@ -90,4 +88,10 @@ gome_model <- gome_data %>%
 #####################################
 
 # export data
-sf::st_write(obj = gome_model, dsn = gome_model_geopackage, layer = paste(region, "model", sep = "_"), append = F)
+sf::st_write(obj = gome_model, dsn = gome_gpkg, layer = paste(region, "model", sep = "_"), append = F)
+
+#####################################
+#####################################
+
+# calculate end time and print time difference
+print(Sys.time() - start) # print how long it takes to calculate
