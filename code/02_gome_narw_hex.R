@@ -116,7 +116,7 @@ cat(crs(narw_density))
 ## study region
 ### final WEA
 gome_wea <- sf::st_read(dsn = file.path(wea_dir, "Final_WEA_Poly.shp")) %>%
-  # change projection to match AIS data coordinate reference system
+  # change projection to match all other data coordinate reference system
   sf::st_transform(crs = crs) %>%
   ### buffered WEA (so all required hex grid cells get covered)
   sf::st_buffer(dist = 1600)
