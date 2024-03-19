@@ -61,7 +61,7 @@ gome_gpkg <- "data/b_model_scores/gome_model_scores.gpkg"
 region <- "gome"
 
 ## layer names
-layer <- "lcoe_2025"
+layer <- "lcoe_2035"
 
 #####################################
 #####################################
@@ -109,10 +109,10 @@ tmax <- 1.0
 
 ## Values
 ### value minimum
-# min <- min(gome_lcoe$narw_min)
+min <- min(gome_lcoe$lcoe_min)
 # 
 # ### value maximum
-# max <- max(gome_lcoe$narw_min)
+max <- max(gome_lcoe$lcoe_min)
 # 
 # ## Gulf of Maine levelized cost of energy normalized
 # gome_lcoe_2035_norm <- gome_lcoe %>%
@@ -131,7 +131,7 @@ gome_lcoe_2035_norm <- gome_lcoe %>%
                   # scores (0.000858) and low costs get higher scores (1.0)
                   (tmax + tmin) - 
                   # normalize the data (will become between 0.8 and 1.0)
-                  (((lcoe_mid - min) / (max - min)) *
+                  (((lcoe_min - min) / (max - min)) *
                      # and then rescale to be between 0.8 and 1.0
                      (tmax - tmin) + tmin)) %>%
   # create field called "layer" and fill with "levelized cost of energy (2035)" for summary
@@ -139,37 +139,33 @@ gome_lcoe_2035_norm <- gome_lcoe %>%
   # select fields of interest
   dplyr::select(OBJECTID,
                 layer,
-                narw_min,
+                lcoe_min,
                 lcoe_norm)
 
 #####################################
 #####################################
 
-# Levelized cost of energy (2035) hex grid
-gome_hex_lcoe_2025 <- gome_hex[gome_lcoe_2035_norm, ] %>%
-  # spatially join continental shelf values to Gulf of Maine final WEA hex cells
-  sf::st_join(x = .,
-              y = gome_lcoe_2035_norm,
-              join = st_intersects) %>%
-  # select fields of importance
-  dplyr::select(OBJECTID,
-                lcoe_norm) %>%
-  # group by the index values as there are duplicates
-  dplyr::group_by(OBJECTID) %>%
-  # summarise the normalized values for the levelized cost of energy in 2035
-  ## take the minimum value of the index
-  dplyr::summarise(lcoe_norm_index = min(lcoe_norm))
+# # Levelized cost of energy (2035) hex grid
+# gome_hex_lcoe_2025 <- gome_hex[gome_lcoe_2035_norm, ] %>%
+#   # spatially join continental shelf values to Gulf of Maine final WEA hex cells
+#   sf::st_join(x = .,
+#               y = gome_lcoe_2035_norm,
+#               join = st_intersects) %>%
+#   # select fields of importance
+#   dplyr::select(OBJECTID,
+#                 lcoe_norm) %>%
+#   # group by the index values as there are duplicates
+#   dplyr::group_by(OBJECTID) %>%
+#   # summarise the normalized values for the levelized cost of energy in 2035
+#   ## take the minimum value of the index
+#   dplyr::summarise(lcoe_norm_index = min(lcoe_norm))
 
 #####################################
 #####################################
 
 # Export data
 ## Wind submodel
-sf::st_write(obj = gome_hex_lcoe_2025, dsn = wind_submodel, layer = paste0(region, "_hex_", layer), append = F)
-
-## Wind geopackage
-sf::st_write(obj = gome_lcoe_2025, dsn = wind_gpkg, layer = "gome_lcoe_2025", append = F)
-sf::st_write(obj = gome_lcoe_2025_norm, dsn = wind_gpkg, layer = "gome_lcoe_2025_norm", append = F)
+sf::st_write(obj = gome_lcoe_2035_norm, dsn = gome_gpkg, layer = paste0(region, "_hex_", layer), append = F)
 
 #####################################
 #####################################
