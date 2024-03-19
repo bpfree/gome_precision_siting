@@ -1,0 +1,13 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+## Miscellaneous data
+miscellaneous/GOME_Model_8_1.gdb
+miscellaneous/gome_wea/Fisheries.gdb
+miscellaneous/gome_wea/Industry_WEA.gdb
+miscellaneous/gome_wea/NatCult_WEA.gdb
+
+## Model data
+data/b_model_scores/gome_model_scores.gpkg
